@@ -20,6 +20,10 @@ constructor(
 {}
 
 
+async getAllTasks(filterDto:GetTasksFilterDto):Promise<Task[]>{
+ return this.taskRepository.getAllTasks(filterDto)
+}
+
 //     getAllTasks(): Task[]{
 //         return this.tasks
 //     }

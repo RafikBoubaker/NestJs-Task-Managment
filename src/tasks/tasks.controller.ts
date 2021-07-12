@@ -12,18 +12,11 @@ import { TasksService } from './tasks.service';
 export class TasksController {
     constructor(private tasksService: TasksService) {}
 
-    // @Get()
-    // getAllTasks(@Query(ValidationPipe) filterDto : GetTasksFilterDto):Task[] {
-    //     console.log(filterDto)
-    //     if(Object.keys(filterDto).length){
-         
-    //         return this.tasksService.getTaskWithFilter(filterDto)
-
-    //     }else{
-    //         return this.tasksService.getAllTasks()
-    //     }
+    @Get()
+    getAllTasks(@Query(ValidationPipe) filterDto : GetTasksFilterDto) :Promise<Task[]>{
+      return this.tasksService.getAllTasks(filterDto)
         
-    // }
+    }
 
 
     @Get('/:id')
