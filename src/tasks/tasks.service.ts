@@ -7,6 +7,7 @@ import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
 import { TaskStatus } from './task-status.enum';
+import { User } from 'src/auth/user.entity';
 
 
 @Injectable()
@@ -20,8 +21,9 @@ constructor(
 {}
 
 
-async getAllTasks(filterDto:GetTasksFilterDto):Promise<Task[]>{
- return this.taskRepository.getAllTasks(filterDto)
+async getAllTasks(filterDto:GetTasksFilterDto, 
+    user: User):Promise<Task[]>{
+ return this.taskRepository.getAllTasks(filterDto,user)
 }
 
 //     getAllTasks(): Task[]{
@@ -40,8 +42,10 @@ async getAllTasks(filterDto:GetTasksFilterDto):Promise<Task[]>{
 //         }
 //         return tasks
 //     }
-async getTaskById(id : number) : Promise<Task> {
-    const found = await this.taskRepository.findOne(id);
+async getTaskById(id : number, 
+    user: User) : Promise<Task> {
+    //const found = await this.taskRepository.findOne(id);
+    const found = await this.taskRepository.findOne({where : {id,userId:user.id}});
     if(!found){
            throw new NotFoundException(`task with the id ${id} not found`)
              }
@@ -57,8 +61,10 @@ async getTaskById(id : number) : Promise<Task> {
     
 //     }
 
-async createTask(createTaskDto:CreateTaskDto) : Promise<Task>{
-return this.taskRepository.createTask(createTaskDto);
+async createTask(
+    createTaskDto:CreateTaskDto,
+    user:User) : Promise<Task>{
+return this.taskRepository.createTask(createTaskDto,user);
 }
 
 
@@ -88,12 +94,12 @@ if (result.affected===0){
 //     this.tasks = this.tasks.filter(task => task.id !== found.id)
 // }
 
-async updateTaskStatus(id : number , status : TaskStatus): Promise<Task>{
-const task = await this.getTaskById(id) 
-    task.status = status
-    await task.save()
-    return task
-}
+// async updateTaskStatus(id : number , status : TaskStatus): Promise<Task>{
+// const task = await this.getTaskById(id) 
+//     task.status = status
+//     await task.save()
+//     return task
+// }
 // updateTaskStatus(id : string , status : TaskStatus): Task{
 //     const task = this.getTaskById(id)
 //         task.status = status
